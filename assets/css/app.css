@@ -3,7 +3,21 @@
 @import "~milligram/dist/milligram";
 
 .column > p {
-    padding-top: 10ex;
-    text-align: center;
+  padding-top: 1rem;
+  text-align: center;
+}
+
+.column > h1 {
+  color: black;
+  text-align: center;
+}
+
+.card {
+  background: gray;
+  padding: 1rem;
+  color: black;
+  text-align: center;
+  width: 6rem;
+  height: 6rem;
 }
 
