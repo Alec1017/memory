@@ -6,8 +6,6 @@ export default function memory_init(root) {
   ReactDOM.render(<Memory />, root);
 }
 
-let letters = 'AABBCCDDEEFFGGHH'.split('');
-
 class Memory extends React.Component {
   constructor(props) {
     super(props);
@@ -17,14 +15,24 @@ class Memory extends React.Component {
       score: 0,
       firstSelected: null,
       secondSelected: null,
-      cards: _.shuffle(letters),
-      letters: ""
+      cards: this.initializeCards()
     };
   }
 
-  // flips a card
-  flip(index) {
-    console.log('flipped!');
+  // Initializes the cards
+  initializeCards() {
+    let letters = 'AABBCCDDEEFFGGHH'.split('');
+
+    let cards = _.map(_.shuffle(letters), (letter, index) => {
+      return {letter: letter, isFlipped: false, isMatched: false, key: index};
+    });
+
+    return cards;
+  }
+
+  // Flips a card
+  cardClicked(card) {
+    console.log(card.letter);
   }
 
   // swap(_ev) {
@@ -43,8 +51,10 @@ class Memory extends React.Component {
       <h1>Memory Game</h1>
     </div>
 
-    let cards = _.map(this.state.cards, (letter, index) => {
-      return <Card letter={letter} onClick={this.flip} key={index} />;
+    console.log(this.initializeCards())
+
+    let cards = _.map(this.state.cards, (card, index) => {
+      return <Card card={card} cardClicked={this.cardClicked.bind(this)} key={index} />;
     });
 
     return (
@@ -69,10 +79,17 @@ class Memory extends React.Component {
 }
 
 // Renders a card
-function Card(params) {
+function Card(props) {
+  let card = props.card;
+  let value = '?';
+
+  if (card.isFlipped || card.isMatched) {
+    value = card.letter;
+  }
+
   return <div className="column column-25">
-    <div className="card">
-      <h4>{params.letter}</h4>
+    <div className="card" onClick={() => props.cardClicked(card)}>
+      <h4>{value}</h4>
     </div>
   </div>
 }
