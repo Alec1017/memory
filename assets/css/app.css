@@ -13,12 +13,19 @@
 }
 
 .card {
-  background: gray;
   padding: 1rem;
   color: black;
   text-align: center;
   width: 6rem;
   height: 6rem;
   margin: auto;
+}
+
+.card-gray {background: gray;}
+.card-yellow {background: yellow;}
+.card-green {background: green;}
+
+.new-game {
+  margin-top: 1rem;
 }
 

@@ -24,7 +24,7 @@ class Memory extends React.Component {
     let letters = 'AABBCCDDEEFFGGHH'.split('');
 
     let cards = _.map(_.shuffle(letters), (letter, index) => {
-      return {letter: letter, isFlipped: false, isMatched: false, key: index};
+      return {letter: letter, isFlipped: false, isMatched: false, color: 'gray', key: index};
     });
 
     return cards;
@@ -32,26 +32,55 @@ class Memory extends React.Component {
 
   // Flips a card
   cardClicked(card) {
-    console.log(card.letter);
+    let newState = this.state;
+
+    // Check if the card is the first selected
+    if (!this.state.firstSelected) {
+      newState = _.assign({}, newState, {firstSelected: card});
+    }
+
+    // Check if the card is the second selected
+    if (!this.state.secondSelected && this.state.firstSelected) {
+      newState = _.assign({}, newState, {secondSelected: card});
+    }
+
+    // Compare them
+  
+    let updatedCards = _.map(this.state.cards, (unflipped) => {
+      if (unflipped.key == card.key) {
+        return _.extend(unflipped, {isFlipped: true, color: 'yellow'});
+      } else {
+        return unflipped;
+      }
+    });
+
+    // Create the new state
+    newState = _.assign({}, newState, {
+      numClicks: this.state.numClicks + 1,
+      cards: updatedCards
+    });
+
+    this.setState(newState);
   }
 
-  // swap(_ev) {
-  //   let state1 = _.assign({}, this.state, { left: !this.state.left });
-  //   this.setState(state1);
-  // }
+  // Resets the game
+  reset() {
+    let cleanState = _.assign({}, this.state, {
+      numMatches: 0,
+      numClicks: 0,
+      score: 0,
+      firstSelected: null,
+      secondSelected: null,
+      cards: this.initializeCards()
+    });
+
+    this.setState(cleanState);
+  }
 
   render() {
-    // let button = <div className="column" onMouseMove={this.swap.bind(this)}>
-    //   <p><button onClick={this.hax.bind(this)}>Click Me</button></p>
-    // </div>;
-
-    // Render all the cards with a map
-
     let title = <div className="column">
       <h1>Memory Game</h1>
     </div>
-
-    console.log(this.initializeCards())
 
     let cards = _.map(this.state.cards, (card, index) => {
       return <Card card={card} cardClicked={this.cardClicked.bind(this)} key={index} />;
@@ -67,10 +96,10 @@ class Memory extends React.Component {
         </div>
         <div className="row">
           <div className="column column-50">
-            <p>Number of clicks: 8</p>
+            <p>Number of clicks: {this.state.numClicks}</p>
           </div>
           <div className="column column-50">
-            <button>New Game</button>
+            <button className="new-game" onClick={this.reset.bind(this)}>New Game</button>
           </div>
         </div>
       </div>
@@ -83,12 +112,16 @@ function Card(props) {
   let card = props.card;
   let value = '?';
 
-  if (card.isFlipped || card.isMatched) {
+  if (card.isFlipped) {
     value = card.letter;
   }
 
+  if (card.isMatched) {
+    value = '✓';
+  }
+
   return <div className="column column-25">
-    <div className="card" onClick={() => props.cardClicked(card)}>
+    <div className={"card card-" + card.color} onClick={() => props.cardClicked(card)}>
       <h4>{value}</h4>
     </div>
   </div>
