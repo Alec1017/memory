@@ -12,7 +12,6 @@ class Memory extends React.Component {
     this.state = {
       numMatches: 0,
       numClicks: 0,
-      score: 0,
       first: null,
       second: null,
       cards: this.initializeCards()
@@ -96,7 +95,7 @@ class Memory extends React.Component {
       this.setState(newState);
       setTimeout(() => {
         this.checkMatch();
-      }, 2000);
+      }, 1000);
     }
     
   }
@@ -106,7 +105,6 @@ class Memory extends React.Component {
     let cleanState = _.assign({}, this.state, {
       numMatches: 0,
       numClicks: 0,
-      score: 0,
       first: null,
       second: null,
       cards: this.initializeCards()
