@@ -1,3 +1,7 @@
+# Live Demo
+
+A live demo can be played at http://memory1.quietbroom.com
+
 # Memory
 
 To start your Phoenix server:
