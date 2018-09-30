@@ -1,3 +1,14 @@
-<div id="root">
-  React app loading...
+<div class="row">
+  <div class="column">
+    <h1 id="index-page">Join a Game</h1>
+    <p><a href="/game/demo">Join "demo"</a></p>
+  </div>
+</div>
+<div class="row">
+  <div class="column column-50 column-offset-25">
+    <form id="gameForm">
+      <input type="text" id="gameInput">
+      <button class="button-primary" id="gameButton" type="submit" onClick="joinGame()">Join</button>
+    </form>
+  </div>
 </div>

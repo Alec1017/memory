@@ -2,20 +2,25 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import _ from 'lodash';
 
-export default function memory_init(root) {
-  ReactDOM.render(<Memory />, root);
+export default function memory_init(root, channel) {
+  ReactDOM.render(<Memory channel={channel}/>, root);
 }
 
 class Memory extends React.Component {
   constructor(props) {
     super(props);
+    this.channel = props.channel;
     this.state = {
       numMatches: 0,
       numClicks: 0,
       first: null,
       second: null,
-      cards: this.initializeCards()
+      cards: this.initializeCards(),
     };
+
+    this.channel.join()
+      .receive("ok", resp => { console.log("Joined successfully", resp) })
+      .receive("error", resp => { console.log("Unable to join", resp) })
   }
 
   // Initializes the cards

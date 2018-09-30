@@ -7,7 +7,7 @@
   text-align: center;
 }
 
-.column > h1 {
+.column > h1, h3 {
   color: black;
   text-align: center;
 }
