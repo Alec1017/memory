@@ -15,23 +15,16 @@ class Memory extends React.Component {
       numClicks: 0,
       first: null,
       second: null,
-      cards: this.initializeCards(),
+      cards: [],
     };
 
     this.channel.join()
-      .receive("ok", resp => { console.log("Joined successfully", resp) })
+      .receive("ok", this.gotView.bind(this))
       .receive("error", resp => { console.log("Unable to join", resp) })
   }
 
-  // Initializes the cards
-  initializeCards() {
-    let letters = 'AABBCCDDEEFFGGHH'.split('');
-
-    let cards = _.map(_.shuffle(letters), (letter, index) => {
-      return {letter: letter, isFlipped: false, isMatched: false, color: 'gray', key: index};
-    });
-
-    return cards;
+  gotView(view) {
+    this.setState(view.game);
   }
 
   // Checks for a match
@@ -107,15 +100,8 @@ class Memory extends React.Component {
 
   // Resets the game
   reset() {
-    let cleanState = _.assign({}, this.state, {
-      numMatches: 0,
-      numClicks: 0,
-      first: null,
-      second: null,
-      cards: this.initializeCards()
-    });
-
-    this.setState(cleanState);
+    this.channel.push("new")
+      .receive("ok", this.gotView.bind(this))
   }
 
   // Render the game
