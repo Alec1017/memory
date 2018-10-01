@@ -3,6 +3,7 @@ defmodule MemoryWeb.GameChannel do
 
   alias Memory.Game
 
+  # Joins a channel
   def join("game:" <> name, payload, socket) do
     game = Game.new()
     socket = socket
@@ -11,17 +12,21 @@ defmodule MemoryWeb.GameChannel do
     {:ok, %{"join" => name, "game" => Game.client_view(game)}, socket}
   end
 
-  # Channels can be used in a request/response fashion
-  # by sending replies to requests from the client
-  def handle_in("ping", payload, socket) do
-    {:reply, {:ok, payload}, socket}
+  def handle_in("cardClicked", %{"card" => card}, socket) do
+    game = Game.cardClicked(socket.assigns[:game], card)
+    socket = assign(socket, :game, game)
+    {:reply, {:ok, %{ "game" => Game.client_view(game)}}, socket}
   end
 
-  # Resets the game
+  def handle_in("checkMatch", payload, socket) do
+    game = Game.checkMatch(socket.assigns[:game])
+    socket = assign(socket, :game, game)
+    {:reply, {:ok, %{ "game" => Game.client_view(game)}}, socket}
+  end
+
   def handle_in("new", payload, socket) do
     game = Game.new()
-    socket = socket
-      |> assign(:game, game)
+    socket = assign(socket, :game, game)
     {:reply, {:ok, %{ "game" => Game.client_view(game)}}, socket}
   end
 end

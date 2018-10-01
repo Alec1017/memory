@@ -27,75 +27,51 @@ class Memory extends React.Component {
     this.setState(view.game);
   }
 
-  // Checks for a match
-  checkMatch() {
-    let newCard = {};
-    if (this.state.first.letter == this.state.second.letter) {
-      newCard = {isMatched: true, color: 'green'};
-      let newState = _.assign({}, this.state, {numMatches: this.state.numMatches + 1});
-      this.setState(newState);
-    } else {
-      newCard = {isFlipped: false, color: 'gray'};
-    }
-
-    let updatedCards = _.map(this.state.cards, (card) => {
-      if (card.key == this.state.first.key || card.key == this.state.second.key) {
-        return _.extend(card, newCard);
-      } else {
-        return card;
-      }
-    });
-
-    let newState = _.assign({}, this.state, {
-      first: null,
-      second: null,
-      cards: updatedCards
-    });
-    this.setState(newState);
-  }
-
   // Flips a card
   cardClicked(card) {
-    // update card to correct color
-    if (this.state.second || card.isMatched) {
-      return;
-    } else {
-      let updatedCards = _.map(this.state.cards, (unflipped) => {
-        if (unflipped.key == card.key) {
-          return _.extend(unflipped, {isFlipped: true, color: 'yellow'});
-        } else {
-          return unflipped;
-        }
-      });
-  
-      let newState = _.assign({}, this.state, {
-        cards: updatedCards
-      });
-      this.setState(newState);
-    }
+     this.channel.push("cardClicked", {card: card})
+       .receive("ok", this.gotView.bind(this))
 
-    // Check for first card
-    if (!this.state.first) {
-      let newState = _.assign({}, this.state, {
-        first: card,
-        numClicks: this.state.numClicks + 1
-      });
-      this.setState(newState);
-      return;
-    }
+
+    // // update card to correct color
+    // if (this.state.second || card.isMatched) {
+    //   return;
+    // } else {
+    //   let updatedCards = _.map(this.state.cards, (unflipped) => {
+    //     if (unflipped.key == card.key) {
+    //       return _.extend(unflipped, {isFlipped: true, color: 'yellow'});
+    //     } else {
+    //       return unflipped;
+    //     }
+    //   });
+  
+    //   let newState = _.assign({}, this.state, {
+    //     cards: updatedCards
+    //   });
+    //   this.setState(newState);
+    // }
+
+    // // Check for first card
+    // if (!this.state.first) {
+    //   let newState = _.assign({}, this.state, {
+    //     first: card,
+    //     numClicks: this.state.numClicks + 1
+    //   });
+    //   this.setState(newState);
+    //   return;
+    // }
 
     // Check for second card
-    if (!this.state.second && this.state.first != card) {
-      let newState = _.assign({}, this.state, {
-        second: card,
-        numClicks: this.state.numClicks + 1
-      });
-      this.setState(newState);
-      setTimeout(() => {
-        this.checkMatch();
-      }, 1000);
-    }
-    
+    // if (!this.state.second && this.state.first != card) {
+    //   let newState = _.assign({}, this.state, {
+    //     second: card,
+    //     numClicks: this.state.numClicks + 1
+    //   });
+    //   this.setState(newState);
+    //   setTimeout(() => {
+    //     this.channel.push("checkMatch")
+    //       .receive("ok"), this.gotView.bind(this)
+    //   }, 1000);
   }
 
   // Resets the game
@@ -147,7 +123,7 @@ class Memory extends React.Component {
 // Renders a card
 function Card(props) {
   let card = props.card;
-  let value = '?'; // ?
+  let value = '?';
 
   if (card.isFlipped) {
     value = card.letter;
