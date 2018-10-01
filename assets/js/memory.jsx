@@ -29,49 +29,19 @@ class Memory extends React.Component {
 
   // Flips a card
   cardClicked(card) {
-     this.channel.push("cardClicked", {card: card})
+    this.channel.push("flipCard", {card: card})
        .receive("ok", this.gotView.bind(this))
 
+    this.channel.push("first?", {card: card})
+      .receive("ok", this.gotView.bind(this))
 
-    // // update card to correct color
-    // if (this.state.second || card.isMatched) {
-    //   return;
-    // } else {
-    //   let updatedCards = _.map(this.state.cards, (unflipped) => {
-    //     if (unflipped.key == card.key) {
-    //       return _.extend(unflipped, {isFlipped: true, color: 'yellow'});
-    //     } else {
-    //       return unflipped;
-    //     }
-    //   });
-  
-    //   let newState = _.assign({}, this.state, {
-    //     cards: updatedCards
-    //   });
-    //   this.setState(newState);
-    // }
+    this.channel.push("second?", {card: card})
+      .receive("ok", this.gotView.bind(this))
 
-    // // Check for first card
-    // if (!this.state.first) {
-    //   let newState = _.assign({}, this.state, {
-    //     first: card,
-    //     numClicks: this.state.numClicks + 1
-    //   });
-    //   this.setState(newState);
-    //   return;
-    // }
-
-    // Check for second card
-    // if (!this.state.second && this.state.first != card) {
-    //   let newState = _.assign({}, this.state, {
-    //     second: card,
-    //     numClicks: this.state.numClicks + 1
-    //   });
-    //   this.setState(newState);
-    //   setTimeout(() => {
-    //     this.channel.push("checkMatch")
-    //       .receive("ok"), this.gotView.bind(this)
-    //   }, 1000);
+    setTimeout(() => {
+      this.channel.push("checkMatch")
+        .receive("ok", this.gotView.bind(this))
+    }, 1000)
   }
 
   // Resets the game

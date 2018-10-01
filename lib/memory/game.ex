@@ -32,28 +32,15 @@ defmodule Memory.Game do
     }
   end
 
-  # // update card to correct color
-  # if (this.state.second || card.isMatched) {
-  #   return;
-  # } else {
-  #   let updatedCards = _.map(this.state.cards, (unflipped) => {
-  #     if (unflipped.key == card.key) {
-  #       return _.extend(unflipped, {isFlipped: true, color: 'yellow'});
-  #     } else {
-  #       return unflipped;
-  #     }
-  #   });
-  
-  #   let newState = _.assign({}, this.state, {
-  #     cards: updatedCards
-  #   });
-  #   this.setState(newState);
-  # }
+  # Converts maps with string keys to atoms
+  def atomize(string_map) do
+    Map.new(string_map, fn {k, v} -> {String.to_atom(k), v} end)
+  end
 
   # Returns new list of cards after one has been clicked
   def flipCard(game, card) do
     if game.second == nil and card.isMatched != nil do
-      Enum.map(game.cards, fn unflipped -> 
+      newCards = Enum.map(game.cards, fn unflipped -> 
         if unflipped.key == card.key do
           Map.put(unflipped, :isFlipped, true)
             |> Map.put(:color, "yellow")
@@ -61,26 +48,18 @@ defmodule Memory.Game do
           unflipped
         end
       end)
+      Map.put(game, :cards, newCards)
     else 
-      game.cards
+      game
     end
   end
 
-  # // Check for first card
-  # if (!this.state.first) {
-  #   let newState = _.assign({}, this.state, {
-  #     first: card,
-  #     numClicks: this.state.numClicks + 1
-  #   });
-  #   this.setState(newState);
-  #   return;
-  # }
 
-  # Checks if its the first card selected, updates state
+  # Checks if its the first card selected
   def isFirst?(game, card) do
-    if game.first != nil do
+    if game.first == nil do
       Map.put(game, :first, card)
-        |> Map.put(game, :numClicks, game.numClicks + 1)
+        |> Map.put(:numClicks, (game.numClicks + 1))
     else
       game
     end
@@ -100,24 +79,21 @@ defmodule Memory.Game do
   #    }, 1000);
   #  }
 
+  # Checks if the card is second to be flipped over
   def isSecond?(game, card) do
-    if game.second != nil and game.first != card do
+    if game.second == nil and game.first != card do
       Map.put(game, :second, card)
-        |> Map.put(game, :numClicks, game.numClicks + 1)
-        |> checkMatch
-        |> Task.yield(1000)
+        |> Map.put(:numClicks, game.numClicks + 1)
       else 
         game
       end
   end
 
-
-  # Flips a card
+  # Handles the logic for a card flip
   def cardClicked(game, card) do
-    IO.puts(inspect(flipCard(game, card)))
     Map.put(game, :cards, flipCard(game, card))
-      # |> isFirst?(card)
-      # |> isSecond?(card)
+      |> isFirst?(card)
+      |> isSecond?(card)
   end
 
   # if (this.state.first.letter == this.state.second.letter) {
@@ -127,6 +103,8 @@ defmodule Memory.Game do
   # } else {
   #   newCard = {isFlipped: false, color: 'gray'};
   # }
+
+  # Determines if the selected cards should be considered a match or flipped back over
   def compareSelectedCards(game) do
     if game.first.letter == game.second.letter do
       %{isMatched: true, color: "green"}
@@ -143,31 +121,34 @@ defmodule Memory.Game do
   #     return card;
   #   }
   # });
+
+  # Updates the two selected cards to be either both green or gray
   def updateCards(game, newCard) do
     Enum.map(game.cards, fn card -> 
       if card.key == game.first.key || card.key == game.second.key do
-        Enum.each(newCard, fn {k, v} ->
-          Map.put(card, k, v)
-        end)
+        Enum.into(newCard, card)
       else
         card
       end
     end)
   end
 
-  # let newState = _.assign({}, this.state, {
-  #   first: null,
-  #   second: null,
-  #   cards: updatedCards
-  # });
-  # this.setState(newState);
+
+# TODO: edit numMatches to make sense, timeout is all out of whack. And you can click a 
+# matched card to make it yello again
+
+  # Checks the two selected cards for a match
   def checkMatch(game) do
-    newCard = compareSelectedCards(game)
-    updatedCards = updateCards(game, newCard)
-    Map.put(game, :cards, updatedCards)
-      |> Map.put(:first, nil)
-      |> Map.put(:second, nil)
-      |> Map.put(:numMatches, game.numMatches + 1)
+    if game.first != nil and game.second != nil do
+      newCard = compareSelectedCards(game)
+      updatedCards = updateCards(game, newCard)
+      Map.put(game, :cards, updatedCards)
+        |> Map.put(:first, nil)
+        |> Map.put(:second, nil)
+        |> Map.put(:numMatches, game.numMatches + 1)
+    else
+      game
+    end
   end
 
 end

@@ -12,21 +12,33 @@ defmodule MemoryWeb.GameChannel do
     {:ok, %{"join" => name, "game" => Game.client_view(game)}, socket}
   end
 
-  def handle_in("cardClicked", %{"card" => card}, socket) do
-    game = Game.cardClicked(socket.assigns[:game], card)
+  def handle_in("first?", %{"card" => card}, socket) do
+    game = Game.isFirst?(socket.assigns[:game], Game.atomize(card))
     socket = assign(socket, :game, game)
-    {:reply, {:ok, %{ "game" => Game.client_view(game)}}, socket}
+    {:reply, {:ok, %{"game" => Game.client_view(game)}}, socket}
+  end
+
+  def handle_in("second?", %{"card" => card}, socket) do
+    game = Game.isSecond?(socket.assigns[:game], Game.atomize(card))
+    socket = assign(socket, :game, game)
+    {:reply, {:ok, %{"game" => Game.client_view(game)}}, socket}
+  end
+
+  def handle_in("flipCard", %{"card" => card}, socket) do
+    game = Game.flipCard(socket.assigns[:game], Game.atomize(card))
+    socket = assign(socket, :game, game)
+    {:reply, {:ok, %{"game" => Game.client_view(game)}}, socket}
   end
 
   def handle_in("checkMatch", payload, socket) do
     game = Game.checkMatch(socket.assigns[:game])
     socket = assign(socket, :game, game)
-    {:reply, {:ok, %{ "game" => Game.client_view(game)}}, socket}
+    {:reply, {:ok, %{"game" => Game.client_view(game)}}, socket}
   end
 
   def handle_in("new", payload, socket) do
     game = Game.new()
     socket = assign(socket, :game, game)
-    {:reply, {:ok, %{ "game" => Game.client_view(game)}}, socket}
+    {:reply, {:ok, %{"game" => Game.client_view(game)}}, socket}
   end
 end
