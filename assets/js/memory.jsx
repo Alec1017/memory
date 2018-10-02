@@ -11,7 +11,6 @@ class Memory extends React.Component {
     super(props);
     this.channel = props.channel;
     this.state = {
-      numMatches: 0,
       numClicks: 0,
       first: null,
       second: null,
