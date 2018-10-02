@@ -29,19 +29,23 @@ class Memory extends React.Component {
 
   // Flips a card
   cardClicked(card) {
-    this.channel.push("flipCard", {card: card})
-       .receive("ok", this.gotView.bind(this))
+    if (this.state.second || card.isMatched) {
+      return;
+    } else {
+      this.channel.push("flipCard", {card: card})
+      .receive("ok", this.gotView.bind(this))
+    }
 
     this.channel.push("first?", {card: card})
       .receive("ok", this.gotView.bind(this))
-
+    
     this.channel.push("second?", {card: card})
       .receive("ok", this.gotView.bind(this))
 
     setTimeout(() => {
       this.channel.push("checkMatch")
         .receive("ok", this.gotView.bind(this))
-    }, 1000)
+    }, 1000);
   }
 
   // Resets the game

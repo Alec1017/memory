@@ -39,7 +39,7 @@ defmodule Memory.Game do
 
   # Returns new list of cards after one has been clicked
   def flipCard(game, card) do
-    if game.second == nil and card.isMatched != nil do
+    #if game.second == nil and card.isMatched == false do
       newCards = Enum.map(game.cards, fn unflipped -> 
         if unflipped.key == card.key do
           Map.put(unflipped, :isFlipped, true)
@@ -49,9 +49,9 @@ defmodule Memory.Game do
         end
       end)
       Map.put(game, :cards, newCards)
-    else 
-      game
-    end
+    # else 
+    #   game
+    # end
   end
 
 
@@ -81,19 +81,12 @@ defmodule Memory.Game do
 
   # Checks if the card is second to be flipped over
   def isSecond?(game, card) do
-    if game.second == nil and game.first != card do
+    if game.second == nil and game.first.key != card.key do
       Map.put(game, :second, card)
         |> Map.put(:numClicks, game.numClicks + 1)
-      else 
-        game
-      end
-  end
-
-  # Handles the logic for a card flip
-  def cardClicked(game, card) do
-    Map.put(game, :cards, flipCard(game, card))
-      |> isFirst?(card)
-      |> isSecond?(card)
+     else 
+       game
+     end
   end
 
   # if (this.state.first.letter == this.state.second.letter) {
