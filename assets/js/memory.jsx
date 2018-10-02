@@ -29,7 +29,7 @@ class Memory extends React.Component {
 
   // Flips a card
   cardClicked(card) {
-    if (this.state.second || card.isMatched) {
+    if (card.isMatched) {
       return;
     } else {
       this.channel.push("flipCard", {card: card})
@@ -42,10 +42,8 @@ class Memory extends React.Component {
     this.channel.push("second?", {card: card})
       .receive("ok", this.gotView.bind(this))
 
-    setTimeout(() => {
-      this.channel.push("checkMatch")
-        .receive("ok", this.gotView.bind(this))
-    }, 1000);
+    this.channel.push("checkMatch")
+      .receive("ok", this.gotView.bind(this))
   }
 
   // Resets the game

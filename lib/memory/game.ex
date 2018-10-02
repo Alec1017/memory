@@ -13,7 +13,6 @@ defmodule Memory.Game do
   # Initializes the cards
   def new do
     %{
-      numMatches: 0,
       numClicks: 0,
       first: nil,
       second: nil,
@@ -24,7 +23,6 @@ defmodule Memory.Game do
   # Shows the current state of the game to the client
   def client_view(game) do
     %{
-      numMatches: game.numMatches,
       numClicks: game.numClicks,
       first: game.first,
       second: game.second,
@@ -39,19 +37,15 @@ defmodule Memory.Game do
 
   # Returns new list of cards after one has been clicked
   def flipCard(game, card) do
-    #if game.second == nil and card.isMatched == false do
-      newCards = Enum.map(game.cards, fn unflipped -> 
-        if unflipped.key == card.key do
-          Map.put(unflipped, :isFlipped, true)
-            |> Map.put(:color, "yellow")
-        else
-          unflipped
-        end
-      end)
-      Map.put(game, :cards, newCards)
-    # else 
-    #   game
-    # end
+    newCards = Enum.map(game.cards, fn unflipped -> 
+      if unflipped.key == card.key do
+        Map.put(unflipped, :isFlipped, true)
+          |> Map.put(:color, "yellow")
+      else
+        unflipped
+      end
+    end)
+    Map.put(game, :cards, newCards)
   end
 
 
@@ -65,20 +59,6 @@ defmodule Memory.Game do
     end
   end
 
-
-  # // Check for second card
-  #  if (!this.state.second && this.state.first != card) {
-  #    let newState = _.assign({}, this.state, {
-  #      second: card,
-  #      numClicks: this.state.numClicks + 1
-  #    });
-  #    this.setState(newState);
-  #    setTimeout(() => {
-  #      this.channel.push("checkMatch")
-  #        .receive("ok"), this.gotView.bind(this)
-  #    }, 1000);
-  #  }
-
   # Checks if the card is second to be flipped over
   def isSecond?(game, card) do
     if game.second == nil and game.first.key != card.key do
@@ -89,14 +69,6 @@ defmodule Memory.Game do
      end
   end
 
-  # if (this.state.first.letter == this.state.second.letter) {
-  #   newCard = {isMatched: true, color: 'green'};
-  #   let newState = _.assign({}, this.state, {numMatches: this.state.numMatches + 1});
-  #   this.setState(newState);
-  # } else {
-  #   newCard = {isFlipped: false, color: 'gray'};
-  # }
-
   # Determines if the selected cards should be considered a match or flipped back over
   def compareSelectedCards(game) do
     if game.first.letter == game.second.letter do
@@ -105,15 +77,6 @@ defmodule Memory.Game do
       %{isFlipped: false, color: "gray"}
     end
   end
-
-
-  # let updatedCards = _.map(this.state.cards, (card) => {
-  #   if (card.key == this.state.first.key || card.key == this.state.second.key) {
-  #     return _.extend(card, newCard);
-  #   } else {
-  #     return card;
-  #   }
-  # });
 
   # Updates the two selected cards to be either both green or gray
   def updateCards(game, newCard) do
@@ -126,19 +89,15 @@ defmodule Memory.Game do
     end)
   end
 
-
-# TODO: edit numMatches to make sense, timeout is all out of whack. And you can click a 
-# matched card to make it yello again
-
   # Checks the two selected cards for a match
   def checkMatch(game) do
     if game.first != nil and game.second != nil do
+      Process.sleep(1000)
       newCard = compareSelectedCards(game)
       updatedCards = updateCards(game, newCard)
-      Map.put(game, :cards, updatedCards)
+      newState = Map.put(game, :cards, updatedCards)
         |> Map.put(:first, nil)
         |> Map.put(:second, nil)
-        |> Map.put(:numMatches, game.numMatches + 1)
     else
       game
     end
