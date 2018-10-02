@@ -95,7 +95,7 @@ defmodule Memory.Game do
       Process.sleep(1000)
       newCard = compareSelectedCards(game)
       updatedCards = updateCards(game, newCard)
-      newState = Map.put(game, :cards, updatedCards)
+      Map.put(game, :cards, updatedCards)
         |> Map.put(:first, nil)
         |> Map.put(:second, nil)
     else
