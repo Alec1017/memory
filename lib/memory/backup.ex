@@ -1,4 +1,7 @@
 defmodule Memory.Backup do
+  # ATTRIBUTION: This code is based on the backup_agent.ex file 
+  # in the hangman app of Nat's notes seen in class.
+
   use Agent
 
   def start_link(_args) do
