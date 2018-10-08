@@ -1,6 +1,6 @@
 # Live Demo
 
-A live demo can be played at http://memory1.quietbroom.com
+A live demo can be played at http://hw04.quietbroom.com
 
 # Memory
 
