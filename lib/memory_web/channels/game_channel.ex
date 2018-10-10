@@ -1,16 +1,16 @@
 defmodule MemoryWeb.GameChannel do
   use MemoryWeb, :channel
 
-  alias Memory.Game
-  alias Memory.Backup
+  # alias Memory.Game
+  # alias Memory.Backup
+
+  alias Memory.GameServer
 
   # Joins a channel
-  def join("game:" <> name, payload, socket) do
-    game = Backup.get_backup(name) || Game.new()
-    socket = socket
-      |> assign(:game, game)
-      |> assign(:name, name)
-    {:ok, %{"join" => name, "game" => Game.client_view(game)}, socket}
+  def join("game:" <> game, payload, socket) do
+    user = socket.assigns[:user]
+    view = GameServer.view(game, user)
+    {:ok, %{"join" => game, "game" => view}, socket}
   end
 
   def handle_in("first?", %{"card" => card}, socket) do

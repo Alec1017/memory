@@ -7,10 +7,7 @@
     <title>Memory Game</title>
     <link rel="stylesheet" href="<%= Routes.static_url(@conn, "/css/app.css") %>"/>
     <script>
-      function joinGame() {
-        let input = document.getElementById('gameInput').value;
-        document.forms["gameForm"].action = "game/" + input;
-      }
+      window.userToken = "<%= @user_token %>";
     </script>
   </head>
   <body>

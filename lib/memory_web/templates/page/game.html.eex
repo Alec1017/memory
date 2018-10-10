@@ -5,6 +5,7 @@
 <div class="row">
   <div class="column">
     <h3>You are in game: <%= @game %></h3>
+    <h4>Your name: <%= @user %></h4>
     <div id="root">
       <p>React app not loaded...</p>
     </div>

@@ -21,7 +21,7 @@ defmodule Memory.Game do
   end
 
   # Shows the current state of the game to the client
-  def client_view(game) do
+  def client_view(game, user) do
     %{
       numClicks: game.numClicks,
       first: game.first,

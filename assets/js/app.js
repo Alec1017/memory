@@ -21,6 +21,7 @@ import memory_init from "./memory";
 $(() => {
   let root = $('#root')[0];
   if (root) {
+    socket.connect();
     let channel = socket.channel("game:" + window.gameName, {});
     memory_init(root, channel);
   }
