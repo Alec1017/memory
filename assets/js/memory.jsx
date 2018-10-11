@@ -16,7 +16,8 @@ class Memory extends React.Component {
       second: null,
       cards: [],
       player1: null,
-      player2: null
+      player2: null,
+      active: null
     };
 
     this.channel.join()
@@ -36,6 +37,14 @@ class Memory extends React.Component {
 
   // Flips a card
   cardClicked(card) {
+    // if active user is not the current user
+    // then just return
+    //
+    // we dont want the non-active user to be able to click
+    if (window.userName != this.props.active) {
+      return;
+    }
+
     if (card.isMatched) {
       return;
     } else {
@@ -72,6 +81,9 @@ class Memory extends React.Component {
     return (
       <div>
         <div className="row">
+          <Header player1={this.state.player1} player2={this.state.player2} active={this.state.active} />
+        </div>
+        <div className="row">
           {title}
         </div>
         <div className="row">
@@ -97,6 +109,36 @@ class Memory extends React.Component {
       </div>
     );
   }
+}
+
+// Information displayed at top of page
+function Header(props) {
+  let p1Status = "still waiting...";
+  let p2Status = "still waiting...";
+  let gameStatus = "Current turn: "
+
+  if (props.player1) {
+    p1Status = props.player1.name;
+  }
+
+  if (props.player2) {
+    p2Status = props.player2.name;
+  }
+
+  if (props.active) {
+    gameStatus = gameStatus + props.active.name;
+  }
+
+  let firstMessage = `Player 1: ${p1Status}`;
+  let secondMessage = `Player 2: ${p2Status}`;
+
+  console.log(props.player1);
+  return <div>
+    <h4>{firstMessage}</h4>
+    <h4>{secondMessage}</h4>
+    <h4>{gameStatus}</h4>
+    <p>{window.userName}</p>
+  </div>
 }
 
 // Renders a card

@@ -18,7 +18,8 @@ defmodule Memory.Game do
       second: nil,
       cards: shuffleCards(),
       player1: nil,
-      player2: nil
+      player2: nil,
+      active: nil
     }
   end
 
@@ -30,7 +31,8 @@ defmodule Memory.Game do
       second: game.second,
       cards: game.cards,
       player1: game.player1,
-      player2: game.player2
+      player2: game.player2,
+      active: game.active
     }
   end
 
@@ -99,12 +101,22 @@ defmodule Memory.Game do
       Process.sleep(1000)
       newCard = compareSelectedCards(game)
       updatedCards = updateCards(game, newCard)
-      Map.put(game, :cards, updatedCards)
+      game = Map.put(game, :cards, updatedCards)
         |> Map.put(:first, nil)
         |> Map.put(:second, nil)
+      if game.player1.name == game.active.name do
+        Map.put(game, :active, game.player2)
+      else
+        Map.put(game, :active, game.player1)
+      end
     else
       game
     end
+  end
+
+  # After checking a match, switch the current player
+  def switchActive(game) do
+
   end
 
   # Will add players to the game until both slots are filled
@@ -114,6 +126,7 @@ defmodule Memory.Game do
         Map.put(game, :player1, %{name: user, score: 0})
       game.player1 != nil && game.player2 == nil ->
         Map.put(game, :player2, %{name: user, score: 0})
+        |> Map.put(:active, game.player1)
       true ->
         game
     end
