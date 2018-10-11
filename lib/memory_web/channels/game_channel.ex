@@ -12,26 +12,31 @@ defmodule MemoryWeb.GameChannel do
 
   def handle_in("first?", %{"card" => card}, socket) do
     view = GameServer.first?(socket.assigns[:game], socket.assigns[:user],  card)
+    broadcast! socket, "broadcast_view", %{"game" => view}
     {:reply, {:ok, %{"game" => view}}, socket}
   end
 
   def handle_in("second?", %{"card" => card}, socket) do
     view = GameServer.second?(socket.assigns[:game], socket.assigns[:user],  card)
+    broadcast! socket, "broadcast_view", %{"game" => view}
     {:reply, {:ok, %{"game" => view}}, socket}  
   end
 
   def handle_in("flipCard", %{"card" => card}, socket) do
     view = GameServer.flipCard(socket.assigns[:game], socket.assigns[:user],  card)
+    broadcast! socket, "broadcast_view", %{"game" => view}
     {:reply, {:ok, %{"game" => view}}, socket}
   end
 
   def handle_in("checkMatch", payload, socket) do
     view = GameServer.checkMatch(socket.assigns[:game], socket.assigns[:user])
+    broadcast! socket, "broadcast_view", %{"game" => view}
     {:reply, {:ok, %{"game" => view}}, socket}
   end
 
   def handle_in("new", payload, socket) do
     view = GameServer.new(socket.assigns[:game], socket.assigns[:user])
+    broadcast! socket, "broadcast_view", %{"game" => view}
     {:reply, {:ok, %{"game" => view}}, socket}
   end
 end

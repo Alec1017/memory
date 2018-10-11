@@ -15,11 +15,16 @@ class Memory extends React.Component {
       first: null,
       second: null,
       cards: [],
+      player1: null,
+      player2: null
     };
 
     this.channel.join()
       .receive("ok", this.gotView.bind(this))
       .receive("error", resp => { console.log("Unable to join", resp) })
+
+    // Broadcast updates to view to the client
+    this.channel.on("broadcast_view", view => {this.gotView(view)})
   }
 
   gotView(view) {

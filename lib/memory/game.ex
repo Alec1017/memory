@@ -16,7 +16,9 @@ defmodule Memory.Game do
       numClicks: 0,
       first: nil,
       second: nil,
-      cards: shuffleCards()
+      cards: shuffleCards(),
+      player1: nil,
+      player2: nil
     }
   end
 
@@ -26,7 +28,9 @@ defmodule Memory.Game do
       numClicks: game.numClicks,
       first: game.first,
       second: game.second,
-      cards: game.cards
+      cards: game.cards,
+      player1: game.player1,
+      player2: game.player2
     }
   end
 
