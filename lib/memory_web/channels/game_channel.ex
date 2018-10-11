@@ -10,6 +10,12 @@ defmodule MemoryWeb.GameChannel do
     {:ok, %{"join" => game, "game" => view}, socket}
   end
 
+  def handle_in("addPlayer", _params, socket) do
+    view = GameServer.addPlayer(socket.assigns[:game], socket.assigns[:user])
+    broadcast! socket, "broadcast_view", %{"game" => view}
+    {:reply, {:ok, %{"game" => view}}, socket}
+  end
+
   def handle_in("first?", %{"card" => card}, socket) do
     view = GameServer.first?(socket.assigns[:game], socket.assigns[:user],  card)
     broadcast! socket, "broadcast_view", %{"game" => view}

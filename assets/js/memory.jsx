@@ -23,6 +23,9 @@ class Memory extends React.Component {
       .receive("ok", this.gotView.bind(this))
       .receive("error", resp => { console.log("Unable to join", resp) })
 
+    this.channel.push("addPlayer")
+      .receive("ok", this.gotView.bind(this))
+
     // Broadcast updates to view to the client
     this.channel.on("broadcast_view", view => {this.gotView(view)})
   }

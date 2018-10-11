@@ -33,6 +33,11 @@ defmodule Memory.GameServer do
     GenServer.call(__MODULE__, {:new, game, user})
   end
 
+  def addPlayer(game, user) do
+    GenServer.call(__MODULE__, {:addPlayer, game, user})
+  end
+  
+
 
   ## Server / Implementation
   def init(state) do
@@ -47,7 +52,7 @@ defmodule Memory.GameServer do
   def handle_call({:first?, game, user, card}, _from, state) do
     gg = Map.get(state, game, Game.new)
     |> Game.isFirst?(user, Game.atomize(card))
-    {:reply,Game.client_view(gg, user), Map.put(state, game, gg)}
+    {:reply, Game.client_view(gg, user), Map.put(state, game, gg)}
   end
 
   def handle_call({:second?, game, user, card}, _from, state) do
@@ -70,5 +75,11 @@ defmodule Memory.GameServer do
 
   def handle_call({:new, game, user}, _from, state) do
     {:reply, Game.client_view(Game.new, user), Map.put(state, game, Game.new)}
+  end
+
+  def handle_call({:addPlayer, game, user}, _from, state) do
+    gg = Map.get(state, game, Game.new)
+    |> Game.addPlayer(user)
+    {:reply, Game.client_view(gg, user), Map.put(state, game, gg)}
   end
 end

@@ -107,4 +107,16 @@ defmodule Memory.Game do
     end
   end
 
+  # Will add players to the game until both slots are filled
+  def addPlayer(game, user) do
+    cond do
+      game.player1 == nil && game.player2 == nil ->
+        Map.put(game, :player1, %{name: user, score: 0})
+      game.player1 != nil && game.player2 == nil ->
+        Map.put(game, :player2, %{name: user, score: 0})
+      true ->
+        game
+    end
+  end
+
 end
