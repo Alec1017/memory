@@ -37,13 +37,10 @@ class Memory extends React.Component {
 
   // Flips a card
   cardClicked(card) {
-    // if active user is not the current user
-    // then just return
-    //
     // we dont want the non-active user to be able to click
-    if (window.userName != this.props.active) {
-      return;
-    }
+    // if (window.userName != this.props.active) {
+    //   return;
+    // }
 
     if (card.isMatched) {
       return;
@@ -113,6 +110,7 @@ class Memory extends React.Component {
 
 // Information displayed at top of page
 function Header(props) {
+  let currentUser = window.userName;
   let p1Status = "still waiting...";
   let p2Status = "still waiting...";
   let gameStatus = "Current turn: "
@@ -132,12 +130,11 @@ function Header(props) {
   let firstMessage = `Player 1: ${p1Status}`;
   let secondMessage = `Player 2: ${p2Status}`;
 
-  console.log(props.player1);
   return <div>
     <h4>{firstMessage}</h4>
     <h4>{secondMessage}</h4>
     <h4>{gameStatus}</h4>
-    <p>{window.userName}</p>
+    <p>{currentUser}</p>
   </div>
 }
 

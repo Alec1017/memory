@@ -5,7 +5,7 @@ defmodule MemoryWeb.PageController do
     render conn, "index.html"
   end
 
-  def join(conn, %{"join" => %{"game" => game, "user" => user}}) do
+  def join(conn, %{"join" => %{"user" => user, "game" => game}}) do
     conn
     |> put_session(:user, user)
     |> redirect(to: "/game/#{game}")
