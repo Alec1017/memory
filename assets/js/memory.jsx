@@ -39,7 +39,7 @@ class Memory extends React.Component {
   // Flips a card
   cardClicked(card) {
     // we dont want the non-active user to be able to click
-    if (window.userName != this.props.active) {
+    if (window.userName != this.state.active.name) {
       return;
     }
 
@@ -89,14 +89,6 @@ class Memory extends React.Component {
           </div>
           <div className="row">
             {cards.slice(12, 16)}
-          </div>
-          <div className="row">
-            <div className="column column-50">
-              <p>Number of clicks: {this.state.numClicks}</p>
-            </div>
-            <div className="column column-50">
-              <button className="new-game" onClick={this.reset.bind(this)}>New Game</button>
-            </div>
           </div>
         </div>
       );
@@ -171,7 +163,6 @@ function Header(props) {
     <div className="column">
       <h4>{firstPlayer}</h4>
       <h4>{firstScore}</h4>
-      <h1>{window.userName}</h1>
     </div>
     <div className="column">
       <h4>{secondPlayer}</h4>
