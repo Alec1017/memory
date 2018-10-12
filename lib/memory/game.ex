@@ -97,6 +97,7 @@ defmodule Memory.Game do
     end)
   end
 
+  # Returns the active user
   def returnActive(game) do
     if game.active.name == game.player1.name do
       [:player1 | game.player1]
@@ -105,6 +106,7 @@ defmodule Memory.Game do
     end
   end
 
+  # Adds score to the active user
   def addScore(game, card) do
     [p_atom | player] = returnActive(game)
     new_score = player.score + 1;
