@@ -14,6 +14,7 @@ defmodule Memory.Game do
   def new do
     %{
       numClicks: 0,
+      numMatches: 0,
       first: nil,
       second: nil,
       cards: shuffleCards(),
@@ -27,6 +28,7 @@ defmodule Memory.Game do
   def client_view(game, user) do
     %{
       numClicks: game.numClicks,
+      numMatches: game.numMatches,
       first: game.first,
       second: game.second,
       cards: game.cards,
@@ -108,6 +110,7 @@ defmodule Memory.Game do
     new_score = player.score + 1;
     if card.color == "green" do
       Map.put(game, p_atom, %{name: player.name, score: new_score})
+      |> Map.put(:numMatches, game.numMatches + 1)
     else
       game
     end

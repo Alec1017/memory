@@ -12,6 +12,7 @@ class Memory extends React.Component {
     this.channel = props.channel;
     this.state = {
       numClicks: 0,
+      numMatches: 0,
       first: null,
       second: null,
       cards: [],
@@ -38,9 +39,9 @@ class Memory extends React.Component {
   // Flips a card
   cardClicked(card) {
     // we dont want the non-active user to be able to click
-    // if (window.userName != this.props.active) {
-    //   return;
-    // }
+    if (window.userName != this.props.active) {
+      return;
+    }
 
     if (card.isMatched) {
       return;
@@ -67,41 +68,75 @@ class Memory extends React.Component {
 
   // Render the game
   render() {
-    let title = <div className="column">
-      <h1>Memory Game</h1>
-    </div>
-
     let cards = _.map(this.state.cards, (card, index) => {
       return <Card card={card} cardClicked={this.cardClicked.bind(this)} key={index} />;
     });
 
-    return (
-      <div>
-        <div className="row">
-          <Header player1={this.state.player1} player2={this.state.player2} active={this.state.active} />
-        </div>
-        <div className="row">
-          {cards.slice(0, 4)}
-        </div>
-        <div className="row">
-          {cards.slice(4, 8)}
-        </div>
-        <div className="row">
-          {cards.slice(8, 12)}
-        </div>
-        <div className="row">
-          {cards.slice(12, 16)}
-        </div>
-        <div className="row">
-          <div className="column column-50">
-            <p>Number of clicks: {this.state.numClicks}</p>
+    if (this.state.numMatches != 8) {
+      return (
+        <div>
+          <div className="row">
+            <Header player1={this.state.player1} player2={this.state.player2} active={this.state.active} />
           </div>
-          <div className="column column-50">
-            <button className="new-game" onClick={this.reset.bind(this)}>New Game</button>
+          <div className="row">
+            {cards.slice(0, 4)}
+          </div>
+          <div className="row">
+            {cards.slice(4, 8)}
+          </div>
+          <div className="row">
+            {cards.slice(8, 12)}
+          </div>
+          <div className="row">
+            {cards.slice(12, 16)}
+          </div>
+          <div className="row">
+            <div className="column column-50">
+              <p>Number of clicks: {this.state.numClicks}</p>
+            </div>
+            <div className="column column-50">
+              <button className="new-game" onClick={this.reset.bind(this)}>New Game</button>
+            </div>
           </div>
         </div>
-      </div>
-    );
+      );
+    } else {
+      return (
+          <div className="row">
+            <Winner player1 ={this.state.player1} player2={this.state.player2} />
+          </div>
+      );
+    }
+  }
+}
+
+// Displays the end game information
+function Winner(props) {
+  let winner = "";
+  let loser = "";
+
+  if (props.player1.score > props.player2.score) {
+    winner = props.player1;
+    loser = props.player2;
+  }
+
+  if (props.player1.score < props.player2.score) {
+    winner = props.player2;
+    loser = props.player1;
+  }
+
+  if (props.player1.score == props.player2.score) {
+    return <div className="end-screen">
+      <h4>Tie game!</h4>
+      <h4>You each got {props.player1.score} points</h4>
+      <a className="button" href="/">Back to lobby</a>
+    </div>
+  } else {
+    return <div className="end-screen">
+      <h4>Your winner is: {winner.name} with {winner.score} points</h4>
+      <h4>Your loser is: {loser.name} with {loser.score} points</h4>
+      <a className="button" href="/">Back to lobby</a>
+  </div>
   }
 }
 
@@ -136,6 +171,7 @@ function Header(props) {
     <div className="column">
       <h4>{firstPlayer}</h4>
       <h4>{firstScore}</h4>
+      <h1>{window.userName}</h1>
     </div>
     <div className="column">
       <h4>{secondPlayer}</h4>
