@@ -95,6 +95,24 @@ defmodule Memory.Game do
     end)
   end
 
+  def returnActive(game) do
+    if game.active.name == game.player1.name do
+      [:player1 | game.player1]
+    else
+      [:player2 | game.player2]
+    end
+  end
+
+  def addScore(game, card) do
+    [p_atom | player] = returnActive(game)
+    new_score = player.score + 1;
+    if card.color == "green" do
+      Map.put(game, p_atom, %{name: player.name, score: new_score})
+    else
+      game
+    end
+  end
+
   # Checks the two selected cards for a match
   def checkMatch(game, user) do
     if game.first != nil and game.second != nil do
@@ -104,6 +122,7 @@ defmodule Memory.Game do
       game = Map.put(game, :cards, updatedCards)
         |> Map.put(:first, nil)
         |> Map.put(:second, nil)
+        |> addScore(newCard)
       if game.player1.name == game.active.name do
         Map.put(game, :active, game.player2)
       else
@@ -112,11 +131,6 @@ defmodule Memory.Game do
     else
       game
     end
-  end
-
-  # After checking a match, switch the current player
-  def switchActive(game) do
-
   end
 
   # Will add players to the game until both slots are filled

@@ -81,9 +81,6 @@ class Memory extends React.Component {
           <Header player1={this.state.player1} player2={this.state.player2} active={this.state.active} />
         </div>
         <div className="row">
-          {title}
-        </div>
-        <div className="row">
           {cards.slice(0, 4)}
         </div>
         <div className="row">
@@ -110,31 +107,43 @@ class Memory extends React.Component {
 
 // Information displayed at top of page
 function Header(props) {
-  let currentUser = window.userName;
   let p1Status = "still waiting...";
   let p2Status = "still waiting...";
+  let p1Score = 0;
+  let p2Score = 0;
   let gameStatus = "Current turn: "
 
   if (props.player1) {
     p1Status = props.player1.name;
+    p1Score = props.player1.score;
   }
 
   if (props.player2) {
     p2Status = props.player2.name;
+    p2Score = props.player2.score;
   }
 
   if (props.active) {
     gameStatus = gameStatus + props.active.name;
   }
 
-  let firstMessage = `Player 1: ${p1Status}`;
-  let secondMessage = `Player 2: ${p2Status}`;
+  let firstPlayer = `Player 1: ${p1Status}`;
+  let secondPlayer = `Player 2: ${p2Status}`;
+  let firstScore = `Player 1 Score: ${p1Score}`;
+  let secondScore = `Player 2 Score: ${p2Score}`;
 
-  return <div>
-    <h4>{firstMessage}</h4>
-    <h4>{secondMessage}</h4>
-    <h4>{gameStatus}</h4>
-    <p>{currentUser}</p>
+  return <div className="row">
+    <div className="column">
+      <h4>{firstPlayer}</h4>
+      <h4>{firstScore}</h4>
+    </div>
+    <div className="column">
+      <h4>{secondPlayer}</h4>
+      <h4>{secondScore}</h4>
+    </div>
+    <div className="row">
+      <h4>{gameStatus}</h4>
+    </div>
   </div>
 }
 
